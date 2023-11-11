@@ -1,8 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package com.zept.practicetool.srtn.calculator;
+
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -31,7 +29,7 @@ public class Calculator extends javax.swing.JFrame {
         jScrollPane5 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tblIUserInput = new javax.swing.JTable();
+        tblUserInput = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblFirst = new javax.swing.JTable();
         lblUserInput = new javax.swing.JLabel();
@@ -85,7 +83,7 @@ public class Calculator extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Shortest Remaining Time Next (STRN) Calculator");
 
-        tblIUserInput.setModel(new javax.swing.table.DefaultTableModel(
+        tblUserInput.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -108,7 +106,7 @@ public class Calculator extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(tblIUserInput);
+        jScrollPane1.setViewportView(tblUserInput);
 
         tblFirst.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -171,6 +169,11 @@ public class Calculator extends javax.swing.JFrame {
         slderNoOfProcess.setMinimum(2);
         slderNoOfProcess.setMinorTickSpacing(1);
         slderNoOfProcess.setOrientation(javax.swing.JSlider.VERTICAL);
+        slderNoOfProcess.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                slderNoOfProcessStateChanged(evt);
+            }
+        });
 
         lblMax.setText("MAX");
 
@@ -249,11 +252,6 @@ public class Calculator extends javax.swing.JFrame {
 
         txtAverageTurn.setEditable(false);
         txtAverageTurn.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtAverageTurn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtAverageTurnActionPerformed(evt);
-            }
-        });
 
         txtAverageWaiting.setEditable(false);
         txtAverageWaiting.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -375,10 +373,16 @@ public class Calculator extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtAverageTurnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAverageTurnActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtAverageTurnActionPerformed
+    private void slderNoOfProcessStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slderNoOfProcessStateChanged
+        int value = slderNoOfProcess.getValue();
+        DefaultTableModel model = (DefaultTableModel) tblUserInput.getModel();
+         
+        for (int i = 0; i < value; i++) {
+            model.addRow(new Object[]{null, null, null});
+        }
+    }//GEN-LAST:event_slderNoOfProcessStateChanged
 
+    
     /**
      * @param args the command line arguments
      */
@@ -438,9 +442,9 @@ public class Calculator extends javax.swing.JFrame {
     private javax.swing.JSlider slderNoOfProcess;
     private javax.swing.JTable tblFirst;
     private javax.swing.JTable tblGantt;
-    private javax.swing.JTable tblIUserInput;
     private javax.swing.JTable tblLast;
     private javax.swing.JTable tblTurn;
+    private javax.swing.JTable tblUserInput;
     private javax.swing.JTable tblWaiting;
     private javax.swing.JTextField txtAverageTurn;
     private javax.swing.JTextField txtAverageWaiting;
