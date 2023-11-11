@@ -1,5 +1,6 @@
 package com.zept.practicetool.srtn.calculator;
 
+import java.awt.List;
 import javax.swing.table.DefaultTableModel;
 import java.util.Arrays;
 
@@ -108,6 +109,7 @@ public class Calculator extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tblUserInput.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jScrollPane1.setViewportView(tblUserInput);
 
         tblFirst.setModel(new javax.swing.table.DefaultTableModel(
@@ -385,6 +387,20 @@ public class Calculator extends javax.swing.JFrame {
         lastModel.setRowCount(value);
     }//GEN-LAST:event_slderNoOfProcessStateChanged
 
+    // Retrieve column values 
+    private int[] retrieveCol(int columnNo, DefaultTableModel model) {
+        // Get row count then create an array of that size
+        int rowCount = model.getRowCount();
+        int[] columnValues = new int[rowCount];
+        
+        // Store the column values to the array
+        for (int i = 0; i < rowCount; i++) {
+            Object value = model.getValueAt(i, columnNo);
+            columnValues[i] = Integer.parseInt(value.toString());
+        }
+        
+        return columnValues;
+    }
     /**
      * @param args the command line arguments
      */
