@@ -3,6 +3,7 @@ package com.zept.practicetool.srtn.calculator;
 import java.awt.List;
 import javax.swing.table.DefaultTableModel;
 import java.util.Arrays;
+import java.util.Vector;
 
 /**
  *
@@ -13,6 +14,9 @@ public class Calculator extends javax.swing.JFrame {
     /**
      * Creates new form Calculator
      */
+    
+    // Global variable to keep track of the processes number of runs
+    static int runCount;
     
     public Calculator() {
         initComponents();
@@ -116,12 +120,27 @@ public class Calculator extends javax.swing.JFrame {
 
         tblChart.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {}
+                {null}
             },
             new String [] {
-
+                ""
             }
-        ));
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane6.setViewportView(tblChart);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -350,7 +369,9 @@ public class Calculator extends javax.swing.JFrame {
         int value = slderNoOfProcess.getValue();
         DefaultTableModel userInputModel = (DefaultTableModel) tblUserInput.getModel();
         userInputModel.setRowCount(value);
-        
+        for (int i = 0; i < slderNoOfProcess.getValue(); i++) {
+            userInputModel.setValueAt("P" + (i + 1),i,0);
+        }
     }//GEN-LAST:event_slderNoOfProcessStateChanged
 
     private void btnSolveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSolveActionPerformed
@@ -362,8 +383,8 @@ public class Calculator extends javax.swing.JFrame {
         DefaultTableModel userInputModel = (DefaultTableModel) tblUserInput.getModel();
         arrivalTime = retrieveCol(1, userInputModel);
         burstTime = retrieveCol(2, userInputModel);
-        Arrays.sort(arrivalTime);
-        Arrays.sort(burstTime);
+        
+        compute(burstTime, arrivalTime);
     }//GEN-LAST:event_btnSolveActionPerformed
 
     // Retrieve column values 
@@ -385,6 +406,52 @@ public class Calculator extends javax.swing.JFrame {
         
         return columnValues;
     }
+    
+    private void compute(int[] burstTime, int[] arrivalTime) {
+        DefaultTableModel chartModel = (DefaultTableModel) tblChart.getModel();
+        Vector<Integer> runs = new Vector<>();
+
+        int currentTime = 0;
+        int completedProcesses = 0;
+
+        while (completedProcesses < slderNoOfProcess.getValue()) {
+            int shortestProcessIndex = findShortestProcessIndex(burstTime, arrivalTime, currentTime);
+
+            if (shortestProcessIndex == -1) {
+                currentTime++;
+                continue;
+            }
+
+            // Record the current process in the Gantt chart
+            runs.add(shortestProcessIndex + 1);
+            chartModel.addRow(new Object[]{currentTime, "P" + (shortestProcessIndex + 1)});
+
+            burstTime[shortestProcessIndex]--;
+
+            if (burstTime[shortestProcessIndex] == 0) {
+                completedProcesses++;
+            }
+
+            currentTime++;
+        }
+    }
+
+    private int findShortestProcessIndex(int[] burstTime, int[] arrivalTime, int currentTime) {
+        int shortestProcessIndex = -1;
+        int shortestRemainingTime = Integer.MAX_VALUE;
+
+        for (int i = 0; i < slderNoOfProcess.getValue(); i++) {
+            if (arrivalTime[i] <= currentTime && burstTime[i] > 0) {
+                if (burstTime[i] < shortestRemainingTime) {
+                    shortestRemainingTime = burstTime[i];
+                    shortestProcessIndex = i;
+                }
+            }
+        }
+
+        return shortestProcessIndex;
+    }
+    
     /**
      * @param args the command line arguments
      */
