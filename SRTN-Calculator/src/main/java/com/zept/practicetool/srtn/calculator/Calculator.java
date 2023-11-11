@@ -33,29 +33,27 @@ public class Calculator extends javax.swing.JFrame {
         jTable2 = new javax.swing.JTable();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblUserInput = new javax.swing.JTable();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tblFirst = new javax.swing.JTable();
         lblUserInput = new javax.swing.JLabel();
-        lblFirst = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        tblLast = new javax.swing.JTable();
-        lblLast = new javax.swing.JLabel();
-        slderNoOfProcess = new javax.swing.JSlider();
-        lblMax = new javax.swing.JLabel();
-        lblMin = new javax.swing.JLabel();
         lblGantt = new javax.swing.JLabel();
         jScrollPane6 = new javax.swing.JScrollPane();
         tblChart = new javax.swing.JTable();
-        jScrollPane7 = new javax.swing.JScrollPane();
-        tblTurn = new javax.swing.JTable();
-        lblTurn = new javax.swing.JLabel();
-        jScrollPane8 = new javax.swing.JScrollPane();
-        tblWaiting = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
+        slderNoOfProcess = new javax.swing.JSlider();
+        lblMin = new javax.swing.JLabel();
+        lblMax = new javax.swing.JLabel();
+        btnSolve = new javax.swing.JButton();
+        btnClear = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
         lblWaiting = new javax.swing.JLabel();
         lblAverageTurn = new javax.swing.JLabel();
         lblAverageWaiting = new javax.swing.JLabel();
         txtAverageTurn = new javax.swing.JTextField();
         txtAverageWaiting = new javax.swing.JTextField();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        tblTurn = new javax.swing.JTable();
+        lblTurn = new javax.swing.JLabel();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        tblWaiting = new javax.swing.JTable();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -112,67 +110,25 @@ public class Calculator extends javax.swing.JFrame {
         tblUserInput.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jScrollPane1.setViewportView(tblUserInput);
 
-        tblFirst.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "start Time", "end Time"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Integer.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        jScrollPane2.setViewportView(tblFirst);
-
         lblUserInput.setText("USER INPUT");
 
-        lblFirst.setText("FIRST");
+        lblGantt.setText("GANTT CHART");
 
-        tblLast.setModel(new javax.swing.table.DefaultTableModel(
+        tblChart.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-
+                {}
             },
             new String [] {
-                "start Time", "end Time"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Integer.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false
-            };
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
             }
+        ));
+        jScrollPane6.setViewportView(tblChart);
 
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tblLast.setToolTipText("");
-        jScrollPane3.setViewportView(tblLast);
-
-        lblLast.setText("LAST");
+        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         slderNoOfProcess.setMaximum(6);
         slderNoOfProcess.setMinimum(2);
         slderNoOfProcess.setMinorTickSpacing(1);
-        slderNoOfProcess.setOrientation(javax.swing.JSlider.VERTICAL);
         slderNoOfProcess.setPaintLabels(true);
         slderNoOfProcess.setPaintTicks(true);
         slderNoOfProcess.setSnapToTicks(true);
@@ -182,36 +138,67 @@ public class Calculator extends javax.swing.JFrame {
             }
         });
 
-        lblMax.setText("MAX");
-
         lblMin.setText("MIN");
 
-        lblGantt.setText("GANTT CHART");
+        lblMax.setText("MAX");
 
-        tblChart.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null}
-            },
-            new String [] {
-                "P1", "P2", "P3", "P4"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.Integer.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
+        btnSolve.setText("SOLVE");
+        btnSolve.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSolveActionPerformed(evt);
             }
         });
-        jScrollPane6.setViewportView(tblChart);
+
+        btnClear.setText("CLEAR");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(lblMin)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(slderNoOfProcess, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblMax, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnSolve)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(slderNoOfProcess, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblMin)
+                    .addComponent(lblMax, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSolve)
+                    .addComponent(btnClear))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        lblWaiting.setText("WAITING TIME (WT)");
+
+        lblAverageTurn.setText("Average TurnAround Time (ATaT)");
+
+        lblAverageWaiting.setText("Average Waiting Time (AWT)");
+
+        txtAverageTurn.setEditable(false);
+        txtAverageTurn.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+
+        txtAverageWaiting.setEditable(false);
+        txtAverageWaiting.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         tblTurn.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -251,125 +238,107 @@ public class Calculator extends javax.swing.JFrame {
         });
         jScrollPane8.setViewportView(tblWaiting);
 
-        lblWaiting.setText("WAITING TIME (WT)");
-
-        lblAverageTurn.setText("Average TurnAround Time (ATaT)");
-
-        lblAverageWaiting.setText("Average Waiting Time (AWT)");
-
-        txtAverageTurn.setEditable(false);
-        txtAverageTurn.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-
-        txtAverageWaiting.setEditable(false);
-        txtAverageWaiting.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addComponent(lblTurn)
+                        .addGap(57, 57, 57))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(48, 48, 48)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblAverageTurn)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGap(54, 54, 54)
+                                        .addComponent(txtAverageTurn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGap(8, 8, 8)))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(55, 55, 55)
+                        .addComponent(lblWaiting))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(31, 31, 31)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblAverageWaiting)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(47, 47, 47)
+                                .addComponent(txtAverageWaiting, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(11, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblTurn)
+                    .addComponent(lblWaiting))
+                .addGap(3, 3, 3)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblAverageTurn)
+                    .addComponent(lblAverageWaiting))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtAverageTurn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtAverageWaiting, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane6)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(103, 103, 103)
-                        .addComponent(lblTurn)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lblWaiting)
-                        .addGap(108, 108, 108))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(86, 86, 86)
-                                .addComponent(lblAverageTurn))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(140, 140, 140)
-                                .addComponent(txtAverageTurn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(174, 174, 174)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblAverageWaiting)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(47, 47, 47)
-                                .addComponent(txtAverageWaiting, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(86, 86, 86)))
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(lblMax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(slderNoOfProcess, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(lblMin, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(130, 130, 130)
-                                .addComponent(lblUserInput)))
+                        .addGap(127, 127, 127)
+                        .addComponent(lblUserInput))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(214, 214, 214)
+                        .addComponent(lblGantt))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(80, 80, 80)
-                                .addComponent(lblFirst)
-                                .addGap(134, 134, 134)
-                                .addComponent(lblLast))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(302, 302, 302)
-                        .addComponent(lblGantt)))
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(jScrollPane6, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addComponent(lblUserInput)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblUserInput)
-                            .addComponent(lblFirst)
-                            .addComponent(lblLast))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                        .addGap(20, 20, 20)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblMax, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(slderNoOfProcess, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lblMin)))
-                .addGap(9, 9, 9)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lblGantt)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblTurn)
-                    .addComponent(lblWaiting))
-                .addGap(3, 3, 3)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblAverageTurn)
-                    .addComponent(lblAverageWaiting))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtAverageTurn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtAverageWaiting, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -380,12 +349,22 @@ public class Calculator extends javax.swing.JFrame {
     private void slderNoOfProcessStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slderNoOfProcessStateChanged
         int value = slderNoOfProcess.getValue();
         DefaultTableModel userInputModel = (DefaultTableModel) tblUserInput.getModel();
-        DefaultTableModel firstModel = (DefaultTableModel) tblFirst.getModel();
-        DefaultTableModel lastModel = (DefaultTableModel) tblLast.getModel();
         userInputModel.setRowCount(value);
-        firstModel.setRowCount(value);
-        lastModel.setRowCount(value);
+        
     }//GEN-LAST:event_slderNoOfProcessStateChanged
+
+    private void btnSolveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSolveActionPerformed
+        // Create arrays with sizes equivalent to the number of processes
+        int arrivalTime[] = new int[slderNoOfProcess.getValue()];
+        int burstTime[] = new int[slderNoOfProcess.getValue()];
+        
+        // Retrieve the sorted columns
+        DefaultTableModel userInputModel = (DefaultTableModel) tblUserInput.getModel();
+        arrivalTime = retrieveCol(1, userInputModel);
+        burstTime = retrieveCol(2, userInputModel);
+        Arrays.sort(arrivalTime);
+        Arrays.sort(burstTime);
+    }//GEN-LAST:event_btnSolveActionPerformed
 
     // Retrieve column values 
     private int[] retrieveCol(int columnNo, DefaultTableModel model) {
@@ -396,7 +375,12 @@ public class Calculator extends javax.swing.JFrame {
         // Store the column values to the array
         for (int i = 0; i < rowCount; i++) {
             Object value = model.getValueAt(i, columnNo);
-            columnValues[i] = Integer.parseInt(value.toString());
+            // Check for null before converting to string
+            if (value != null) {
+                columnValues[i] = Integer.parseInt(value.toString());
+            } else {
+                columnValues[i] = 0; 
+            }
         }
         
         return columnValues;
@@ -437,9 +421,11 @@ public class Calculator extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnClear;
+    private javax.swing.JButton btnSolve;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
@@ -449,9 +435,7 @@ public class Calculator extends javax.swing.JFrame {
     private javax.swing.JTable jTable2;
     private javax.swing.JLabel lblAverageTurn;
     private javax.swing.JLabel lblAverageWaiting;
-    private javax.swing.JLabel lblFirst;
     private javax.swing.JLabel lblGantt;
-    private javax.swing.JLabel lblLast;
     private javax.swing.JLabel lblMax;
     private javax.swing.JLabel lblMin;
     private javax.swing.JLabel lblTurn;
@@ -459,8 +443,6 @@ public class Calculator extends javax.swing.JFrame {
     private javax.swing.JLabel lblWaiting;
     private javax.swing.JSlider slderNoOfProcess;
     private javax.swing.JTable tblChart;
-    private javax.swing.JTable tblFirst;
-    private javax.swing.JTable tblLast;
     private javax.swing.JTable tblTurn;
     private javax.swing.JTable tblUserInput;
     private javax.swing.JTable tblWaiting;
