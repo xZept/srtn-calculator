@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
-
 package com.zept.practicetool.srtn.calculator;
 
 /**
@@ -11,6 +7,5 @@ package com.zept.practicetool.srtn.calculator;
 public class SRTNCalculator {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
     }
 }
