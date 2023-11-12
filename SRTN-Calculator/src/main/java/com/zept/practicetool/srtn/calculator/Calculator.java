@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
@@ -18,21 +19,7 @@ import javax.swing.table.TableRowSorter;
  * @author Allen James Laxamana
  */
 public class Calculator extends javax.swing.JFrame {
-    // Custom data structure
-    class Process {
 
-        String processName;
-        int arrivalTime;
-        int burstTime;
-
-        public Process(String processName, int arrivalTime, int burstTime) {
-            this.processName = processName;
-            this.arrivalTime = arrivalTime;
-            this.burstTime = burstTime;
-        }
-    }
-    private List<Process> processes = new ArrayList<>(); // Array list for the process
-    
     public Calculator() {
         initComponents();
     }
@@ -357,7 +344,9 @@ public class Calculator extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane6)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -396,14 +385,32 @@ public class Calculator extends javax.swing.JFrame {
 
     private void btnCalculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalculateActionPerformed
         // Create arrays with sizes equivalent to the number of processes
+        String processName[] = new String[slderNoOfProcess.getValue()];
         int arrivalTime[] = new int[slderNoOfProcess.getValue()];
         int burstTime[] = new int[slderNoOfProcess.getValue()];
 
-        // Retrieve the sorted columns
         DefaultTableModel userInputModel = (DefaultTableModel) tblUserInput.getModel();
-        arrivalTime = retrieveCol(1, userInputModel);
-        burstTime = retrieveCol(2, userInputModel);
-        compute(burstTime, arrivalTime);
+
+        // Save the user input values to your arrays or process them as needed
+        for (int i = 0; i < userInputModel.getRowCount(); i++) {
+            processName[i] = (String) userInputModel.getValueAt(i, 0);
+            arrivalTime[i] = (int) userInputModel.getValueAt(i, 1);
+            burstTime[i] = (int) userInputModel.getValueAt(i, 2);
+        }
+
+        sortTable(userInputModel);
+        
+        // Reflect the changes 
+        tblUserInput.revalidate();
+        tblUserInput.repaint();
+        
+        // For debugging
+        for (int i = 0; i < userInputModel.getRowCount(); i++) {
+            System.out.print(processName[i]);
+            System.out.print(arrivalTime[i]);
+            System.out.print(burstTime[i]);
+            System.out.println("");
+        }
     }//GEN-LAST:event_btnCalculateActionPerformed
 
     // Retrieve column values 
@@ -426,31 +433,21 @@ public class Calculator extends javax.swing.JFrame {
         return columnValues;
     }
 
-    private void retrieveCol(DefaultTableModel model) {
-         // Retrieve the sorted columns
-        DefaultTableModel userInputModel = (DefaultTableModel) tblUserInput.getModel();
-        for (int i = 0; i < slderNoOfProcess.getValue(); i++) {
-            String processName = (String) userInputModel.getValueAt(i, 0);
-            int arrivalTime = (int) userInputModel.getValueAt(i, 1);
-            int burstTime = (int) userInputModel.getValueAt(i, 2);
-            processes.set(i, new Process(processName, arrivalTime, burstTime));
-            Collections.sort(processes, Comparator.comparingInt(p -> p.arrivalTime));
-        }
-    }
-    
-    private void compute(int[] burstTime, int[] arrivalTime) {
-        // Dynamic array
-        Vector<Integer> ganttChart = new Vector<>();
+    private void sortTable(DefaultTableModel model) {
+        // Get reference from the existing JTable
+        JTable table = tblUserInput;
 
-        int completedProcess = 0;
-        int currentTime = 0;
+        // Create a TableRowSorter and sort the table based on the "Arrival Time" column
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
+        table.setRowSorter(sorter);
 
-        while (completedProcess < slderNoOfProcess.getValue()) {
-            Arrays.sort(burstTime);
-            Arrays.sort(arrivalTime);
-            burstTime[0] -= 1;
-            currentTime++;
-        }
+        // Specify the sorting order for the "Arrival Time" column
+        List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+        sortKeys.add(new RowSorter.SortKey(1, SortOrder.ASCENDING)); // Assuming column 1 is the "Arrival Time" column
+        sorter.setSortKeys(sortKeys);
+
+        // Apply the sorting
+        sorter.sort();
     }
 
     /**
