@@ -482,14 +482,23 @@ public class Calculator extends javax.swing.JFrame {
         int timeSpent = 0;
         boolean preemp = false;
 
+        
         // Run until every process has ran once
         for (int i = 0; i < userInputModel.getRowCount(); i++) {
+            Arrays.sort(name);
+            Arrays.sort(arrival);
+            Arrays.sort(burst);
             while (preemp != true) {
                 timeSpent++;
                 burst[i]--;
                 // Pre-emp once another process arrives
                 if (timeSpent == arrival[i + 1]) {
-                    preemp = true;
+                    if (burst[i] > burst[i + 1]) {
+                        preemp = true;
+                    }
+                }
+                if (burst[i] == 0) {
+                    break;
                 }
             }
         }
