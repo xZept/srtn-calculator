@@ -18,8 +18,6 @@ import javax.swing.table.TableRowSorter;
  * @author Allen James Laxamana
  */
 public class Calculator extends javax.swing.JFrame {
-    ControlHandler control = new ControlHandler();
-    
     // Custom data structure
     class Process {
 
@@ -31,17 +29,6 @@ public class Calculator extends javax.swing.JFrame {
             this.processName = processName;
             this.arrivalTime = arrivalTime;
             this.burstTime = burstTime;
-        }
-        
-        // Getters
-        public String getProcessName() {
-            return processName;
-        }
-         public int getArrivalTime() {
-            return arrivalTime;
-        }
-          public int getBurstTime() {
-            return burstTime;
         }
     }
     private List<Process> processes = new ArrayList<>(); // Array list for the process
@@ -416,7 +403,7 @@ public class Calculator extends javax.swing.JFrame {
         DefaultTableModel userInputModel = (DefaultTableModel) tblUserInput.getModel();
         arrivalTime = retrieveCol(1, userInputModel);
         burstTime = retrieveCol(2, userInputModel);
-        control.compute(burstTime, arrivalTime);
+        compute(burstTime, arrivalTime);
     }//GEN-LAST:event_btnCalculateActionPerformed
 
     // Retrieve column values 
@@ -448,7 +435,21 @@ public class Calculator extends javax.swing.JFrame {
             int burstTime = (int) userInputModel.getValueAt(i, 2);
             processes.set(i, new Process(processName, arrivalTime, burstTime));
             Collections.sort(processes, Comparator.comparingInt(p -> p.arrivalTime));
-            control.updateTable(userInputModel, processes);
+        }
+    }
+    
+    private void compute(int[] burstTime, int[] arrivalTime) {
+        // Dynamic array
+        Vector<Integer> ganttChart = new Vector<>();
+
+        int completedProcess = 0;
+        int currentTime = 0;
+
+        while (completedProcess < slderNoOfProcess.getValue()) {
+            Arrays.sort(burstTime);
+            Arrays.sort(arrivalTime);
+            burstTime[0] -= 1;
+            currentTime++;
         }
     }
 
@@ -508,7 +509,7 @@ public class Calculator extends javax.swing.JFrame {
     private javax.swing.JLabel lblTurn;
     private javax.swing.JLabel lblUserInput;
     private javax.swing.JLabel lblWaiting;
-    public javax.swing.JSlider slderNoOfProcess;
+    private javax.swing.JSlider slderNoOfProcess;
     private javax.swing.JTable tblChart;
     private javax.swing.JTable tblTurn;
     private javax.swing.JTable tblUserInput;
