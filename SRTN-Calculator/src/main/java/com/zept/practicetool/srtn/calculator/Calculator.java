@@ -384,15 +384,13 @@ public class Calculator extends javax.swing.JFrame {
     }//GEN-LAST:event_slderNoOfProcessStateChanged
 
     private void btnCalculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalculateActionPerformed
+        // Create arrays with sizes equivalent to the number of processes
+        DefaultTableModel userInputModel = (DefaultTableModel) tblUserInput.getModel();
+        String processName[] = new String[userInputModel.getRowCount()];
+        int arrivalTime[] = new int[userInputModel.getRowCount()];
+        int burstTime[] = new int[userInputModel.getRowCount()];
 
         try {
-            // Create arrays with sizes equivalent to the number of processes
-            String processName[] = new String[slderNoOfProcess.getValue()];
-            int arrivalTime[] = new int[slderNoOfProcess.getValue()];
-            int burstTime[] = new int[slderNoOfProcess.getValue()];
-
-            DefaultTableModel userInputModel = (DefaultTableModel) tblUserInput.getModel();
-
             // Save the user input values to your arrays or process them as needed
             for (int i = 0; i < userInputModel.getRowCount(); i++) {
                 processName[i] = (String) userInputModel.getValueAt(i, 0);
@@ -401,16 +399,24 @@ public class Calculator extends javax.swing.JFrame {
             }
 
             sortTable(userInputModel);
-
-            // Save the user input values to your arrays or process them as needed
-            for (int i = 0; i < userInputModel.getRowCount(); i++) {
-                processName[i] = (String) userInputModel.getValueAt(i, 0);
-                arrivalTime[i] = (int) userInputModel.getValueAt(i, 1);
-                burstTime[i] = (int) userInputModel.getValueAt(i, 2);
-            }
         } catch (NullPointerException e) {
             JOptionPane.showMessageDialog(null, "Please confirm the values by pressing ENTER.");
         }
+
+        // Save the user input values to your arrays or process them as needed
+        for (int i = 0; i < userInputModel.getRowCount(); i++) {
+            processName[i] = (String) userInputModel.getValueAt(i, 0);
+            arrivalTime[i] = (int) userInputModel.getValueAt(i, 1);
+            burstTime[i] = (int) userInputModel.getValueAt(i, 2);
+        }
+
+        // Add columns for the first run of Gantt chart
+        for (int i = 0; i < userInputModel.getRowCount(); i++) {
+            userInputModel.addColumn(processName[i]);
+        }
+        computeFirstGantt(processName, arrivalTime, burstTime);
+
+
     }//GEN-LAST:event_btnCalculateActionPerformed
 
     // Retrieve column values 
@@ -468,6 +474,26 @@ public class Calculator extends javax.swing.JFrame {
         // Reflect the changes 
         tblUserInput.revalidate();
         tblUserInput.repaint();
+    }
+
+    private int computeFirstGantt(String[] name, int[] arrival, int[] burst) {
+        DefaultTableModel userInputModel = (DefaultTableModel) tblUserInput.getModel();
+        int runTime = 0;
+        int timeSpent = 0;
+        boolean preemp = false;
+
+        // Run until every process has ran once
+        for (int i = 0; i < userInputModel.getRowCount(); i++) {
+            while (preemp != true) {
+                timeSpent++;
+                burst[i]--;
+                // Pre-emp once another process arrives
+                if (timeSpent == arrival[i + 1]) {
+                    preemp = true;
+                }
+            }
+        }
+        return timeSpent;
     }
 
     /**
