@@ -384,32 +384,32 @@ public class Calculator extends javax.swing.JFrame {
     }//GEN-LAST:event_slderNoOfProcessStateChanged
 
     private void btnCalculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalculateActionPerformed
-        // Create arrays with sizes equivalent to the number of processes
-        String processName[] = new String[slderNoOfProcess.getValue()];
-        int arrivalTime[] = new int[slderNoOfProcess.getValue()];
-        int burstTime[] = new int[slderNoOfProcess.getValue()];
 
-        DefaultTableModel userInputModel = (DefaultTableModel) tblUserInput.getModel();
+        try {
+            // Create arrays with sizes equivalent to the number of processes
+            String processName[] = new String[slderNoOfProcess.getValue()];
+            int arrivalTime[] = new int[slderNoOfProcess.getValue()];
+            int burstTime[] = new int[slderNoOfProcess.getValue()];
 
-        // Save the user input values to your arrays or process them as needed
-        for (int i = 0; i < userInputModel.getRowCount(); i++) {
-            processName[i] = (String) userInputModel.getValueAt(i, 0);
-            arrivalTime[i] = (int) userInputModel.getValueAt(i, 1);
-            burstTime[i] = (int) userInputModel.getValueAt(i, 2);
-        }
+            DefaultTableModel userInputModel = (DefaultTableModel) tblUserInput.getModel();
 
-        sortTable(userInputModel);
-        
-        // Reflect the changes 
-        tblUserInput.revalidate();
-        tblUserInput.repaint();
-        
-        // For debugging
-        for (int i = 0; i < userInputModel.getRowCount(); i++) {
-            System.out.print(processName[i]);
-            System.out.print(arrivalTime[i]);
-            System.out.print(burstTime[i]);
-            System.out.println("");
+            // Save the user input values to your arrays or process them as needed
+            for (int i = 0; i < userInputModel.getRowCount(); i++) {
+                processName[i] = (String) userInputModel.getValueAt(i, 0);
+                arrivalTime[i] = (int) userInputModel.getValueAt(i, 1);
+                burstTime[i] = (int) userInputModel.getValueAt(i, 2);
+            }
+
+            sortTable(userInputModel);
+
+            // Save the user input values to your arrays or process them as needed
+            for (int i = 0; i < userInputModel.getRowCount(); i++) {
+                processName[i] = (String) userInputModel.getValueAt(i, 0);
+                arrivalTime[i] = (int) userInputModel.getValueAt(i, 1);
+                burstTime[i] = (int) userInputModel.getValueAt(i, 2);
+            }
+        } catch (NullPointerException e) {
+            JOptionPane.showMessageDialog(null, "Please confirm the values by pressing ENTER.");
         }
     }//GEN-LAST:event_btnCalculateActionPerformed
 
@@ -434,20 +434,40 @@ public class Calculator extends javax.swing.JFrame {
     }
 
     private void sortTable(DefaultTableModel model) {
-        // Get reference from the existing JTable
-        JTable table = tblUserInput;
+        // Get the number of rows in the model
+        int rowCount = model.getRowCount();
 
-        // Create a TableRowSorter and sort the table based on the "Arrival Time" column
-        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(model);
-        table.setRowSorter(sorter);
+        // Create a 2D array to hold the data
+        Object[][] data = new Object[rowCount][model.getColumnCount()];
 
-        // Specify the sorting order for the "Arrival Time" column
-        List<RowSorter.SortKey> sortKeys = new ArrayList<>();
-        sortKeys.add(new RowSorter.SortKey(1, SortOrder.ASCENDING)); // Assuming column 1 is the "Arrival Time" column
-        sorter.setSortKeys(sortKeys);
+        // Populate the 2D array with data from the model
+        for (int i = 0; i < rowCount; i++) {
+            for (int j = 0; j < model.getColumnCount(); j++) {
+                data[i][j] = model.getValueAt(i, j);
+            }
+        }
 
-        // Apply the sorting
-        sorter.sort();
+        // Sort the 2D array based on the "Arrival Time" column (assuming column 1 is the "Arrival Time" column)
+        Arrays.sort(data, new Comparator<Object[]>() {
+            @Override
+            public int compare(Object[] row1, Object[] row2) {
+                Comparable<Object> val1 = (Comparable<Object>) row1[1];
+                Comparable<Object> val2 = (Comparable<Object>) row2[1];
+                return val1.compareTo(val2);
+            }
+        });
+
+        // Clear the model
+        model.setRowCount(0);
+
+        // Populate the model with the sorted data
+        for (Object[] row : data) {
+            model.addRow(row);
+        }
+
+        // Reflect the changes 
+        tblUserInput.revalidate();
+        tblUserInput.repaint();
     }
 
     /**
