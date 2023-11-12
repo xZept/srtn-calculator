@@ -1,22 +1,37 @@
 package com.zept.practicetool.srtn.calculator;
 
-import java.awt.List;
+import java.util.List;
+import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Vector;
+import javax.swing.JTable;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 /**
  *
  * @author Allen James Laxamana
  */
 public class Calculator extends javax.swing.JFrame {
+    // Custom data structure
+    class Process {
 
-    /**
-     * Creates new form Calculator
-     */
-    
-    // Global variable to keep track of the processes number of runs
-    static int runCount;
+        String processName;
+        int arrivalTime;
+        int burstTime;
+
+        public Process(String processName, int arrivalTime, int burstTime) {
+            this.processName = processName;
+            this.arrivalTime = arrivalTime;
+            this.burstTime = burstTime;
+        }
+    }
+    private List<Process> processes = new ArrayList<>(); // Array list for the process
     
     public Calculator() {
         initComponents();
@@ -45,7 +60,7 @@ public class Calculator extends javax.swing.JFrame {
         slderNoOfProcess = new javax.swing.JSlider();
         lblMin = new javax.swing.JLabel();
         lblMax = new javax.swing.JLabel();
-        btnSolve = new javax.swing.JButton();
+        btnCalculate = new javax.swing.JButton();
         btnClear = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         lblWaiting = new javax.swing.JLabel();
@@ -161,10 +176,10 @@ public class Calculator extends javax.swing.JFrame {
 
         lblMax.setText("MAX");
 
-        btnSolve.setText("SOLVE");
-        btnSolve.addActionListener(new java.awt.event.ActionListener() {
+        btnCalculate.setText("CALCULATE");
+        btnCalculate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSolveActionPerformed(evt);
+                btnCalculateActionPerformed(evt);
             }
         });
 
@@ -185,7 +200,7 @@ public class Calculator extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblMax, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnSolve)
+                        .addComponent(btnCalculate)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -200,7 +215,7 @@ public class Calculator extends javax.swing.JFrame {
                     .addComponent(lblMax, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnSolve)
+                    .addComponent(btnCalculate)
                     .addComponent(btnClear))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -282,17 +297,20 @@ public class Calculator extends javax.swing.JFrame {
                         .addGap(8, 8, 8)))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(55, 55, 55)
-                        .addComponent(lblWaiting))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(31, 31, 31)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblAverageWaiting)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(47, 47, 47)
-                                .addComponent(txtAverageWaiting, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(55, 55, 55)
+                                .addComponent(lblWaiting))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(31, 31, 31)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblAverageWaiting)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGap(47, 47, 47)
+                                        .addComponent(txtAverageWaiting, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -323,22 +341,24 @@ public class Calculator extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(127, 127, 127)
-                        .addComponent(lblUserInput))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(214, 214, 214)
-                        .addComponent(lblGantt))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jScrollPane6, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(127, 127, 127)
+                                .addComponent(lblUserInput))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(214, 214, 214)
+                                .addComponent(lblGantt))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -370,29 +390,28 @@ public class Calculator extends javax.swing.JFrame {
         DefaultTableModel userInputModel = (DefaultTableModel) tblUserInput.getModel();
         userInputModel.setRowCount(value);
         for (int i = 0; i < slderNoOfProcess.getValue(); i++) {
-            userInputModel.setValueAt("P" + (i + 1),i,0);
+            userInputModel.setValueAt("P" + (i + 1), i, 0);
         }
     }//GEN-LAST:event_slderNoOfProcessStateChanged
 
-    private void btnSolveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSolveActionPerformed
+    private void btnCalculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalculateActionPerformed
         // Create arrays with sizes equivalent to the number of processes
         int arrivalTime[] = new int[slderNoOfProcess.getValue()];
         int burstTime[] = new int[slderNoOfProcess.getValue()];
-        
+
         // Retrieve the sorted columns
         DefaultTableModel userInputModel = (DefaultTableModel) tblUserInput.getModel();
         arrivalTime = retrieveCol(1, userInputModel);
         burstTime = retrieveCol(2, userInputModel);
-        
         compute(burstTime, arrivalTime);
-    }//GEN-LAST:event_btnSolveActionPerformed
+    }//GEN-LAST:event_btnCalculateActionPerformed
 
     // Retrieve column values 
     private int[] retrieveCol(int columnNo, DefaultTableModel model) {
         // Get row count then create an array of that size
         int rowCount = model.getRowCount();
         int[] columnValues = new int[rowCount];
-        
+
         // Store the column values to the array
         for (int i = 0; i < rowCount; i++) {
             Object value = model.getValueAt(i, columnNo);
@@ -400,58 +419,40 @@ public class Calculator extends javax.swing.JFrame {
             if (value != null) {
                 columnValues[i] = Integer.parseInt(value.toString());
             } else {
-                columnValues[i] = 0; 
+                columnValues[i] = 0;
             }
         }
-        
+
         return columnValues;
+    }
+
+    private void retrieveCol(DefaultTableModel model) {
+         // Retrieve the sorted columns
+        DefaultTableModel userInputModel = (DefaultTableModel) tblUserInput.getModel();
+        for (int i = 0; i < slderNoOfProcess.getValue(); i++) {
+            String processName = (String) userInputModel.getValueAt(i, 0);
+            int arrivalTime = (int) userInputModel.getValueAt(i, 1);
+            int burstTime = (int) userInputModel.getValueAt(i, 2);
+            processes.set(i, new Process(processName, arrivalTime, burstTime));
+            Collections.sort(processes, Comparator.comparingInt(p -> p.arrivalTime));
+        }
     }
     
     private void compute(int[] burstTime, int[] arrivalTime) {
-        DefaultTableModel chartModel = (DefaultTableModel) tblChart.getModel();
-        Vector<Integer> runs = new Vector<>();
+        // Dynamic array
+        Vector<Integer> ganttChart = new Vector<>();
 
+        int completedProcess = 0;
         int currentTime = 0;
-        int completedProcesses = 0;
 
-        while (completedProcesses < slderNoOfProcess.getValue()) {
-            int shortestProcessIndex = findShortestProcessIndex(burstTime, arrivalTime, currentTime);
-
-            if (shortestProcessIndex == -1) {
-                currentTime++;
-                continue;
-            }
-
-            // Record the current process in the Gantt chart
-            runs.add(shortestProcessIndex + 1);
-            chartModel.addRow(new Object[]{currentTime, "P" + (shortestProcessIndex + 1)});
-
-            burstTime[shortestProcessIndex]--;
-
-            if (burstTime[shortestProcessIndex] == 0) {
-                completedProcesses++;
-            }
-
+        while (completedProcess < slderNoOfProcess.getValue()) {
+            Arrays.sort(burstTime);
+            Arrays.sort(arrivalTime);
+            burstTime[0] -= 1;
             currentTime++;
         }
     }
 
-    private int findShortestProcessIndex(int[] burstTime, int[] arrivalTime, int currentTime) {
-        int shortestProcessIndex = -1;
-        int shortestRemainingTime = Integer.MAX_VALUE;
-
-        for (int i = 0; i < slderNoOfProcess.getValue(); i++) {
-            if (arrivalTime[i] <= currentTime && burstTime[i] > 0) {
-                if (burstTime[i] < shortestRemainingTime) {
-                    shortestRemainingTime = burstTime[i];
-                    shortestProcessIndex = i;
-                }
-            }
-        }
-
-        return shortestProcessIndex;
-    }
-    
     /**
      * @param args the command line arguments
      */
@@ -488,8 +489,8 @@ public class Calculator extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCalculate;
     private javax.swing.JButton btnClear;
-    private javax.swing.JButton btnSolve;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
