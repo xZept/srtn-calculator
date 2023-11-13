@@ -24,6 +24,9 @@ public class Calculator extends javax.swing.JFrame {
         initComponents();
     }
 
+    // Global variable to keep track of the number of completed processes and number of columns in the ganttChart
+    static int completedProcess = 0, columnCount = 0;
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -122,27 +125,12 @@ public class Calculator extends javax.swing.JFrame {
 
         tblChart.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null}
+
             },
             new String [] {
-                ""
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class
-            };
-            boolean[] canEdit = new boolean [] {
-                false
-            };
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
             }
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        ));
         jScrollPane6.setViewportView(tblChart);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -403,40 +391,69 @@ public class Calculator extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Please confirm the values by pressing ENTER.");
         }
 
-        // Save the user input values to your arrays or process them as needed
+        // Save the user input values to an array
         for (int i = 0; i < userInputModel.getRowCount(); i++) {
             processName[i] = (String) userInputModel.getValueAt(i, 0);
             arrivalTime[i] = (int) userInputModel.getValueAt(i, 1);
             burstTime[i] = (int) userInputModel.getValueAt(i, 2);
         }
 
-        // Add columns for the first run of Gantt chart
-        for (int i = 0; i < userInputModel.getRowCount(); i++) {
-            userInputModel.addColumn(processName[i]);
-        }
-        computeFirstGantt(processName, arrivalTime, burstTime);
+        while (completedProcess != userInputModel.getRowCount()) {
+            int currentBurstTime = burstTime[0];
+            int previousBurstTime = 0;
+            int rowIndex = 0;
+            boolean preemp = runProcess(processName[0], arrivalTime[0], burstTime[0], arrivalTime[1]);
 
+            if (preemp == true) {
+                completedProcess++;
+                userInputModel.addColumn(processName[0]);
+                if (completedProcess != 0) {
+                    previousBurstTime = (int) userInputModel.getValueAt(completedProcess - 1, columnCount);
+                    rowIndex = completedProcess - 1;
+                }
+                Object time = previousBurstTime + currentBurstTime;
 
-    }//GEN-LAST:event_btnCalculateActionPerformed
-
-    // Retrieve column values 
-    private int[] retrieveCol(int columnNo, DefaultTableModel model) {
-        // Get row count then create an array of that size
-        int rowCount = model.getRowCount();
-        int[] columnValues = new int[rowCount];
-
-        // Store the column values to the array
-        for (int i = 0; i < rowCount; i++) {
-            Object value = model.getValueAt(i, columnNo);
-            // Check for null before converting to string
-            if (value != null) {
-                columnValues[i] = Integer.parseInt(value.toString());
-            } else {
-                columnValues[i] = 0;
+                // Assuming 'tableCount' is the column index where you want to update the value
+                rowIndex = completedProcess - 1;
+                userInputModel.setValueAt(time, rowIndex, columnCount);
+            }
+            else {
+                sortArray(processName,arrivalTime,burstTime);
+                runProcess(processName[0],arrivalTime[0],burstTime[0],arrivalTime[2]);
             }
         }
 
-        return columnValues;
+        // For debugging
+        for (int i = 0; i < userInputModel.getRowCount(); i++) {
+            System.out.print(processName[i]);
+            System.out.print(arrivalTime[i]);
+            System.out.print(burstTime[i]);
+            System.out.println("");
+        }
+    }//GEN-LAST:event_btnCalculateActionPerformed
+
+    private void sortArray(String[] processName, int[] arrivalTime, int[] burstTime) {
+        Integer[] indexes = new Integer[burstTime.length];
+        for (int i = 0; i < burstTime.length; i++) {
+            indexes[i] = i;
+        }
+
+        Arrays.sort(indexes, Comparator.comparingInt(i -> burstTime[i]));
+
+        for (int i = 0; i < burstTime.length; i++) {
+            int originalIndex = indexes[i];
+            String tempName = processName[i];
+            int tempArrivalTime = arrivalTime[i];
+            int tempBurstTime = burstTime[i];
+
+            processName[i] = processName[originalIndex];
+            arrivalTime[i] = arrivalTime[originalIndex];
+            burstTime[i] = burstTime[originalIndex];
+
+            processName[originalIndex] = tempName;
+            arrivalTime[originalIndex] = tempArrivalTime;
+            burstTime[originalIndex] = tempBurstTime;
+        }
     }
 
     private void sortTable(DefaultTableModel model) {
@@ -476,33 +493,21 @@ public class Calculator extends javax.swing.JFrame {
         tblUserInput.repaint();
     }
 
-    private int computeFirstGantt(String[] name, int[] arrival, int[] burst) {
+    // Run each process using recursion
+    private boolean runProcess(String name, int arrival, int burst, int nextProcessArrival) {
         DefaultTableModel userInputModel = (DefaultTableModel) tblUserInput.getModel();
-        int runTime = 0;
-        int timeSpent = 0;
-        boolean preemp = false;
 
-        
-        // Run until every process has ran once
-        for (int i = 0; i < userInputModel.getRowCount(); i++) {
-            Arrays.sort(name);
-            Arrays.sort(arrival);
-            Arrays.sort(burst);
-            while (preemp != true) {
-                timeSpent++;
-                burst[i]--;
-                // Pre-emp once another process arrives
-                if (timeSpent == arrival[i + 1]) {
-                    if (burst[i] > burst[i + 1]) {
-                        preemp = true;
-                    }
-                }
-                if (burst[i] == 0) {
-                    break;
-                }
-            }
+        // Pre-emp
+        if (burst == nextProcessArrival) {
+            return false;
         }
-        return timeSpent;
+        // Burst time has reached 0
+        if (burst == 0) {
+            return true;
+        }
+
+        // Recurse
+        return runProcess(name, arrival, burst - 1, nextProcessArrival);
     }
 
     /**
