@@ -386,6 +386,7 @@ public class Calculator extends javax.swing.JFrame {
                 burstTime[i] = (int) userInputModel.getValueAt(i, 2);
             }
 
+            // Sort the table based on their arrival
             sortTable(userInputModel);
         } catch (NullPointerException e) {
             JOptionPane.showMessageDialog(null, "Please confirm the values by pressing ENTER.");
@@ -399,27 +400,36 @@ public class Calculator extends javax.swing.JFrame {
         }
 
         while (completedProcess != userInputModel.getRowCount()) {
+            int tempIndex = 0;
             int currentBurstTime = burstTime[0];
             int previousBurstTime = 0;
             int rowIndex = 0;
-            boolean preemp = runProcess(processName[0], arrivalTime[0], burstTime[0], arrivalTime[1]);
+            burstTime[tempIndex] = runProcess(processName[0], arrivalTime[0], burstTime[0], arrivalTime[1]);
 
-            if (preemp == true) {
+            if (burstTime[0] == 0) {
                 completedProcess++;
                 userInputModel.addColumn(processName[0]);
-                if (completedProcess != 0) {
+                rowIndex = completedProcess - 1;
+                if (completedProcess == 1) {
+                    previousBurstTime = 0;
+                } else {
                     previousBurstTime = (int) userInputModel.getValueAt(completedProcess - 1, columnCount);
-                    rowIndex = completedProcess - 1;
                 }
                 Object time = previousBurstTime + currentBurstTime;
 
-                // Assuming 'tableCount' is the column index where you want to update the value
-                rowIndex = completedProcess - 1;
+                // Insert a new record on the table
                 userInputModel.setValueAt(time, rowIndex, columnCount);
-            }
-            else {
-                sortArray(processName,arrivalTime,burstTime);
-                runProcess(processName[0],arrivalTime[0],burstTime[0],arrivalTime[2]);
+
+                // Insert a new record on the table and add the new value to the Gantt Chart
+                userInputModel.setValueAt(time, rowIndex, columnCount);
+                DefaultTableModel chartModel = (DefaultTableModel) tblChart.getModel();
+                chartModel.addColumn(processName[0]);
+                
+                columnCount++;
+                tempIndex++;
+            } else {
+                sortArray(processName, arrivalTime, burstTime);
+                runProcess(processName[0], arrivalTime[0], burstTime[0], arrivalTime[1]);
             }
         }
 
@@ -494,19 +504,18 @@ public class Calculator extends javax.swing.JFrame {
     }
 
     // Run each process using recursion
-    private boolean runProcess(String name, int arrival, int burst, int nextProcessArrival) {
+    private int runProcess(String name, int arrival, int burst, int nextProcessArrival) {
         DefaultTableModel userInputModel = (DefaultTableModel) tblUserInput.getModel();
 
-        // Pre-emp
-        if (burst == nextProcessArrival) {
-            return false;
-        }
         // Burst time has reached 0
         if (burst == 0) {
-            return true;
+            return burst;
         }
-
-        // Recurse
+        // Pre-emp
+        if (burst == nextProcessArrival) {
+            return burst;
+        }
+        // Recursive call
         return runProcess(name, arrival, burst - 1, nextProcessArrival);
     }
 
