@@ -24,8 +24,8 @@ public class Calculator extends javax.swing.JFrame {
         initComponents();
     }
 
-    // Global variable to keep track of the number of completed processes and number of columns in the ganttChart
-    static int completedProcess = 0, columnCount = 0;
+    // Global variable to keep track of the number of completed processes
+    static int completedProcess = 0;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -372,8 +372,11 @@ public class Calculator extends javax.swing.JFrame {
     }//GEN-LAST:event_slderNoOfProcessStateChanged
 
     private void btnCalculateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalculateActionPerformed
-        // Create arrays with sizes equivalent to the number of processes
+        // Create table models
         DefaultTableModel userInputModel = (DefaultTableModel) tblUserInput.getModel();
+        DefaultTableModel chartModel = (DefaultTableModel) tblChart.getModel();
+
+        // Create arrays with sizes equivalent to the number of processes
         String processName[] = new String[userInputModel.getRowCount()];
         int arrivalTime[] = new int[userInputModel.getRowCount()];
         int burstTime[] = new int[userInputModel.getRowCount()];
@@ -400,33 +403,31 @@ public class Calculator extends javax.swing.JFrame {
         }
 
         while (completedProcess != userInputModel.getRowCount()) {
-            int tempIndex = 0;
             int currentBurstTime = burstTime[0];
             int previousBurstTime = 0;
-            int rowIndex = 0;
+            int tempIndex = 0;
             burstTime[tempIndex] = runProcess(processName[0], arrivalTime[0], burstTime[0], arrivalTime[1]);
 
             if (burstTime[0] == 0) {
                 completedProcess++;
-                userInputModel.addColumn(processName[0]);
-                rowIndex = completedProcess - 1;
                 if (completedProcess == 1) {
                     previousBurstTime = 0;
                 } else {
-                    previousBurstTime = (int) userInputModel.getValueAt(completedProcess - 1, columnCount);
+                    previousBurstTime = (int) chartModel.getValueAt(tempIndex, chartModel.getColumnCount() - 1);
                 }
                 Object time = previousBurstTime + currentBurstTime;
 
-                // Insert a new record on the table
-                userInputModel.setValueAt(time, rowIndex, columnCount);
-
-                // Insert a new record on the table and add the new value to the Gantt Chart
-                userInputModel.setValueAt(time, rowIndex, columnCount);
-                DefaultTableModel chartModel = (DefaultTableModel) tblChart.getModel();
+                // Insert a new record on the table and add the new column to the Gantt Chart
                 chartModel.addColumn(processName[0]);
+                int columnIndex = chartModel.getColumnCount() - 1;
+                chartModel.addRow(new Object[]{});
+                int rowIndex = chartModel.getRowCount() - 1;
+                chartModel.setValueAt(time, rowIndex, columnIndex);
+                rowIndex++;
                 
-                columnCount++;
-                tempIndex++;
+                // Reflect the changes
+                tblChart.revalidate();
+                tblChart.repaint();
             } else {
                 sortArray(processName, arrivalTime, burstTime);
                 runProcess(processName[0], arrivalTime[0], burstTime[0], arrivalTime[1]);
