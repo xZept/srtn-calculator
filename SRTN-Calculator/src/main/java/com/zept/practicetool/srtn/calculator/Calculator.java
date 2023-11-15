@@ -24,8 +24,9 @@ public class Calculator extends javax.swing.JFrame {
         initComponents();
     }
 
-    // Global variable to keep track of the number of completed processes
+    // Global variable to keep track of the number of completed processes and the time spent
     static int completedProcess = 0;
+    static int timeSpent = 0;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -402,44 +403,33 @@ public class Calculator extends javax.swing.JFrame {
             burstTime[i] = (int) userInputModel.getValueAt(i, 2);
         }
 
+        // Create a new row for the Gantt Chart
+        chartModel.addRow(new Object[userInputModel.getRowCount()]);
+        int rowIndex = chartModel.getRowCount() - 1;
+
         while (completedProcess != userInputModel.getRowCount()) {
             int currentBurstTime = burstTime[0];
             int previousBurstTime = 0;
             int tempIndex = 0;
-            burstTime[tempIndex] = runProcess(processName[0], arrivalTime[0], burstTime[0], arrivalTime[1]);
+            burstTime[tempIndex] = runProcess(processName[0], arrivalTime[0], burstTime[0], arrivalTime[1], burstTime);
 
             if (burstTime[0] == 0) {
                 completedProcess++;
-                if (completedProcess == 1) {
-                    previousBurstTime = 0;
-                } else {
-                    previousBurstTime = (int) chartModel.getValueAt(tempIndex, chartModel.getColumnCount() - 1);
-                }
-                Object time = previousBurstTime + currentBurstTime;
 
-                // Insert a new record on the table and add the new column to the Gantt Chart
+                // Add the new column to the Gantt Chart
                 chartModel.addColumn(processName[0]);
+
+                // Set the value in the same row for the corresponding column
                 int columnIndex = chartModel.getColumnCount() - 1;
-                chartModel.addRow(new Object[]{});
-                int rowIndex = chartModel.getRowCount() - 1;
-                chartModel.setValueAt(time, rowIndex, columnIndex);
-                rowIndex++;
-                
+                chartModel.setValueAt(timeSpent, rowIndex, columnIndex);
+
                 // Reflect the changes
                 tblChart.revalidate();
                 tblChart.repaint();
-            } else {
                 sortArray(processName, arrivalTime, burstTime);
-                runProcess(processName[0], arrivalTime[0], burstTime[0], arrivalTime[1]);
+            } else {
+                runProcess(processName[0], arrivalTime[0], burstTime[0], arrivalTime[1], burstTime);
             }
-        }
-
-        // For debugging
-        for (int i = 0; i < userInputModel.getRowCount(); i++) {
-            System.out.print(processName[i]);
-            System.out.print(arrivalTime[i]);
-            System.out.print(burstTime[i]);
-            System.out.println("");
         }
     }//GEN-LAST:event_btnCalculateActionPerformed
 
@@ -449,21 +439,39 @@ public class Calculator extends javax.swing.JFrame {
             indexes[i] = i;
         }
 
+        // Sorting based on burst time and then arrival time
         Arrays.sort(indexes, Comparator.comparingInt(i -> burstTime[i]));
 
+        // Creating a temporary array to store the sorted values
+        String[] tempProcessName = new String[processName.length];
+        int[] tempArrivalTime = new int[arrivalTime.length];
+        int[] tempBurstTime = new int[burstTime.length];
+
+        // Copying values based on the sorted order
         for (int i = 0; i < burstTime.length; i++) {
             int originalIndex = indexes[i];
-            String tempName = processName[i];
-            int tempArrivalTime = arrivalTime[i];
-            int tempBurstTime = burstTime[i];
+            tempProcessName[i] = processName[originalIndex];
+            tempArrivalTime[i] = arrivalTime[originalIndex];
+            tempBurstTime[i] = burstTime[originalIndex];
+        }
 
-            processName[i] = processName[originalIndex];
-            arrivalTime[i] = arrivalTime[originalIndex];
-            burstTime[i] = burstTime[originalIndex];
+        // Check if the first process has burst time 0, move it to the end
+        if (tempBurstTime[0] == 0) {
+            for (int i = 1; i < burstTime.length; i++) {
+                tempProcessName[i - 1] = tempProcessName[i];
+                tempArrivalTime[i - 1] = tempArrivalTime[i];
+                tempBurstTime[i - 1] = tempBurstTime[i];
+            }
+            tempProcessName[burstTime.length - 1] = processName[indexes[0]];
+            tempArrivalTime[burstTime.length - 1] = arrivalTime[indexes[0]];
+            tempBurstTime[burstTime.length - 1] = burstTime[indexes[0]];
+        }
 
-            processName[originalIndex] = tempName;
-            arrivalTime[originalIndex] = tempArrivalTime;
-            burstTime[originalIndex] = tempBurstTime;
+        // Copying back the values to the original arrays
+        for (int i = 0; i < burstTime.length; i++) {
+            processName[i] = tempProcessName[i];
+            arrivalTime[i] = tempArrivalTime[i];
+            burstTime[i] = tempBurstTime[i];
         }
     }
 
@@ -481,7 +489,7 @@ public class Calculator extends javax.swing.JFrame {
             }
         }
 
-        // Sort the 2D array based on the "Arrival Time" column (assuming column 1 is the "Arrival Time" column)
+        // Sort the 2D array based on the "Arrival Time" column
         Arrays.sort(data, new Comparator<Object[]>() {
             @Override
             public int compare(Object[] row1, Object[] row2) {
@@ -505,19 +513,30 @@ public class Calculator extends javax.swing.JFrame {
     }
 
     // Run each process using recursion
-    private int runProcess(String name, int arrival, int burst, int nextProcessArrival) {
-        DefaultTableModel userInputModel = (DefaultTableModel) tblUserInput.getModel();
-
+    private int runProcess(String name, int arrival, int burst, int nextProcessArrival, int[] burstTime) {
         // Burst time has reached 0
         if (burst == 0) {
             return burst;
         }
-        // Pre-emp
+
+        // If another process arrives at this time, check burst times and prioritize the lower burst time
         if (burst == nextProcessArrival) {
-            return burst;
+            int indexOfCurrentProcess = Arrays.asList(burstTime).indexOf(burst);
+
+            // Check if the current process is found in the burstTime array
+            if (indexOfCurrentProcess != -1) {
+                int indexOfNextProcess = Arrays.asList(burstTime).indexOf(nextProcessArrival);
+
+                // Check if the next process has a lower burst time
+                if (indexOfNextProcess != -1 && burstTime[indexOfNextProcess] < burstTime[indexOfCurrentProcess]) {
+                    return burst;
+                }
+            }
         }
+
+        timeSpent++;
         // Recursive call
-        return runProcess(name, arrival, burst - 1, nextProcessArrival);
+        return runProcess(name, arrival, burst - 1, nextProcessArrival, burstTime);
     }
 
     /**
