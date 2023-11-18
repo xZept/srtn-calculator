@@ -408,10 +408,7 @@ public class Calculator extends javax.swing.JFrame {
         int rowIndex = chartModel.getRowCount() - 1;
 
         while (completedProcess != userInputModel.getRowCount()) {
-            int currentBurstTime = burstTime[0];
-            int previousBurstTime = 0;
-            int tempIndex = 0;
-            burstTime[tempIndex] = runProcess(processName[0], arrivalTime[0], burstTime[0], arrivalTime[1]);
+            burstTime[0] = runProcess(processName[0], arrivalTime[0], burstTime[0], arrivalTime[1]);
 
             if (burstTime[0] == 0) {
                 completedProcess++;
@@ -423,63 +420,75 @@ public class Calculator extends javax.swing.JFrame {
                 int columnIndex = chartModel.getColumnCount() - 1;
                 chartModel.setValueAt(timeSpent, rowIndex, columnIndex);
 
-                // Reflect the changes
-                tblChart.revalidate();
-                tblChart.repaint();
                 sortArray(processName, arrivalTime, burstTime);
             } else {
                 sortArray(processName, arrivalTime, burstTime);
+                burstTime[0] = runProcess(processName[0], arrivalTime[0], burstTime[0]);
                 // For debugging
                 for (int i = 0; i < chartModel.getColumnCount(); i++) {
                     System.out.println(processName[i]);
                     System.out.println(arrivalTime[i]);
                     System.out.println(burstTime[i]);
                 }
-                runProcess(processName[0], arrivalTime[0], burstTime[0], arrivalTime[1]);
             }
         }
     }//GEN-LAST:event_btnCalculateActionPerformed
 
     private void sortArray(String[] processName, int[] arrivalTime, int[] burstTime) {
         Integer[] indexes = new Integer[burstTime.length];
+
         for (int i = 0; i < burstTime.length; i++) {
             indexes[i] = i;
         }
 
         // Sorting based on burst time and then arrival time
-        Arrays.sort(indexes, Comparator.comparingInt(i -> burstTime[i]));
+        Arrays.sort(indexes, Comparator.comparingInt(i -> {
+            if (burstTime[i] == 0 || burstTime[i] < timeSpent) {
+                // Process has burst time 0 or has already arrived
+                return burstTime[i];
+            } else {
+                // Set a high value for processes that haven't arrived yet
+                return Integer.MAX_VALUE;
+            }
+        }));
 
         // Creating a temporary array to store the sorted values
-        String[] tempProcessName = new String[processName.length];
-        int[] tempArrivalTime = new int[arrivalTime.length];
-        int[] tempBurstTime = new int[burstTime.length];
+        String[] tempProcessName = Arrays.copyOf(processName, processName.length);
+        int[] tempArrivalTime = Arrays.copyOf(arrivalTime, arrivalTime.length);
+        int[] tempBurstTime = Arrays.copyOf(burstTime, burstTime.length);
 
-        // Copying values based on the sorted order
+        // Move processes with burst time 0 to the end
+        int zeroBurstIndex = 0;
         for (int i = 0; i < burstTime.length; i++) {
-            int originalIndex = indexes[i];
-            tempProcessName[i] = processName[originalIndex];
-            tempArrivalTime[i] = arrivalTime[originalIndex];
-            tempBurstTime[i] = burstTime[originalIndex];
+            if (tempBurstTime[i] == 0) {
+                zeroBurstIndex = i;
+                break;
+            }
         }
 
-        // Check if the first process has burst time 0, move it to the end
-        if (tempBurstTime[0] == 0) {
-            for (int i = 1; i < burstTime.length; i++) {
-                tempProcessName[i - 1] = tempProcessName[i];
-                tempArrivalTime[i - 1] = tempArrivalTime[i];
-                tempBurstTime[i - 1] = tempBurstTime[i];
-            }
-            tempProcessName[burstTime.length - 1] = processName[indexes[0]];
-            tempArrivalTime[burstTime.length - 1] = arrivalTime[indexes[0]];
-            tempBurstTime[burstTime.length - 1] = burstTime[indexes[0]];
+        // Shift elements to move burst time 0 process to the end
+        for (int i = zeroBurstIndex; i < burstTime.length - 1; i++) {
+            swap(tempProcessName, i, i + 1);
+            swap(tempArrivalTime, i, i + 1);
+            swap(tempBurstTime, i, i + 1);
         }
 
         // Copying back the values to the original arrays
-        for (int i = 0; i < burstTime.length; i++) {
-            processName[i] = tempProcessName[i];
-            arrivalTime[i] = tempArrivalTime[i];
-            burstTime[i] = tempBurstTime[i];
-        }
+        System.arraycopy(tempProcessName, 0, processName, 0, processName.length);
+        System.arraycopy(tempArrivalTime, 0, arrivalTime, 0, arrivalTime.length);
+        System.arraycopy(tempBurstTime, 0, burstTime, 0, burstTime.length);
+    }
+
+    private void swap(String[] array, int index1, int index2) {
+        String temp = array[index1];
+        array[index1] = array[index2];
+        array[index2] = temp;
+    }
+
+    private void swap(int[] array, int index1, int index2) {
+        int temp = array[index1];
+        array[index1] = array[index2];
+        array[index2] = temp;
     }
 
     private void sortTable(DefaultTableModel model) {
@@ -531,6 +540,19 @@ public class Calculator extends javax.swing.JFrame {
             timeSpent++;
             // Recursive call
             return runProcess(name, arrival, burst - 1, nextProcessArrival);
+        }
+    }
+
+    // Overloaded method that also runs the process
+    private int runProcess(String name, int arrival, int burst) {
+        // Burst time has reached 0
+        if (burst == 0) {
+            return burst;
+        } // If another process arrives at this time, check burst times and prioritize the lower burst time
+        else {
+            timeSpent++;
+            // Recursive call
+            return runProcess(name, arrival, burst - 1);
         }
     }
 
