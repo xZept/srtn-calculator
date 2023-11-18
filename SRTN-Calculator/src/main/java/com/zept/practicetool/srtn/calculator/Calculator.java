@@ -411,7 +411,7 @@ public class Calculator extends javax.swing.JFrame {
             int currentBurstTime = burstTime[0];
             int previousBurstTime = 0;
             int tempIndex = 0;
-            burstTime[tempIndex] = runProcess(processName[0], arrivalTime[0], burstTime[0], arrivalTime[1], burstTime);
+            burstTime[tempIndex] = runProcess(processName[0], arrivalTime[0], burstTime[0], arrivalTime[1]);
 
             if (burstTime[0] == 0) {
                 completedProcess++;
@@ -428,7 +428,14 @@ public class Calculator extends javax.swing.JFrame {
                 tblChart.repaint();
                 sortArray(processName, arrivalTime, burstTime);
             } else {
-                runProcess(processName[0], arrivalTime[0], burstTime[0], arrivalTime[1], burstTime);
+                sortArray(processName, arrivalTime, burstTime);
+                // For debugging
+                for (int i = 0; i < chartModel.getColumnCount(); i++) {
+                    System.out.println(processName[i]);
+                    System.out.println(arrivalTime[i]);
+                    System.out.println(burstTime[i]);
+                }
+                runProcess(processName[0], arrivalTime[0], burstTime[0], arrivalTime[1]);
             }
         }
     }//GEN-LAST:event_btnCalculateActionPerformed
@@ -513,30 +520,18 @@ public class Calculator extends javax.swing.JFrame {
     }
 
     // Run each process using recursion
-    private int runProcess(String name, int arrival, int burst, int nextProcessArrival, int[] burstTime) {
+    private int runProcess(String name, int arrival, int burst, int nextProcessArrival) {
         // Burst time has reached 0
         if (burst == 0) {
             return burst;
+        } // If another process arrives at this time, check burst times and prioritize the lower burst time
+        else if (timeSpent == nextProcessArrival) {
+            return burst;
+        } else {
+            timeSpent++;
+            // Recursive call
+            return runProcess(name, arrival, burst - 1, nextProcessArrival);
         }
-
-        // If another process arrives at this time, check burst times and prioritize the lower burst time
-        if (burst == nextProcessArrival) {
-            int indexOfCurrentProcess = Arrays.asList(burstTime).indexOf(burst);
-
-            // Check if the current process is found in the burstTime array
-            if (indexOfCurrentProcess != -1) {
-                int indexOfNextProcess = Arrays.asList(burstTime).indexOf(nextProcessArrival);
-
-                // Check if the next process has a lower burst time
-                if (indexOfNextProcess != -1 && burstTime[indexOfNextProcess] < burstTime[indexOfCurrentProcess]) {
-                    return burst;
-                }
-            }
-        }
-
-        timeSpent++;
-        // Recursive call
-        return runProcess(name, arrival, burst - 1, nextProcessArrival, burstTime);
     }
 
     /**
