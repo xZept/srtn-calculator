@@ -430,6 +430,13 @@ public class Calculator extends javax.swing.JFrame {
                     System.out.println(arrivalTime[i]);
                     System.out.println(burstTime[i]);
                 }
+
+                // Add the new column to the Gantt Chart
+                chartModel.addColumn(processName[0]);
+
+                // Set the value in the same row for the corresponding column
+                int columnIndex = chartModel.getColumnCount() - 1;
+                chartModel.setValueAt(timeSpent, rowIndex, columnIndex);
             }
         }
     }//GEN-LAST:event_btnCalculateActionPerformed
@@ -466,11 +473,13 @@ public class Calculator extends javax.swing.JFrame {
             }
         }
 
-        // Shift elements to move burst time 0 process to the end
+        // Swap elements to move burst time 0 process to the end
         for (int i = zeroBurstIndex; i < burstTime.length - 1; i++) {
-            swap(tempProcessName, i, i + 1);
-            swap(tempArrivalTime, i, i + 1);
-            swap(tempBurstTime, i, i + 1);
+            if (tempBurstTime[i + 1] == 0 || tempBurstTime[i + 1] < timeSpent) {
+                swap(tempProcessName, i, i + 1);
+                swap(tempArrivalTime, i, i + 1);
+                swap(tempBurstTime, i, i + 1);
+            }
         }
 
         // Copying back the values to the original arrays
