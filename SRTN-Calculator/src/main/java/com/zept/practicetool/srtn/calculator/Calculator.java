@@ -120,8 +120,10 @@ public class Calculator extends javax.swing.JFrame {
         tblUserInput.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jScrollPane1.setViewportView(tblUserInput);
 
+        lblUserInput.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblUserInput.setText("USER INPUT");
 
+        lblGantt.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblGantt.setText("GANTT CHART");
 
         tblChart.setModel(new javax.swing.table.DefaultTableModel(
@@ -142,6 +144,7 @@ public class Calculator extends javax.swing.JFrame {
         slderNoOfProcess.setPaintLabels(true);
         slderNoOfProcess.setPaintTicks(true);
         slderNoOfProcess.setSnapToTicks(true);
+        slderNoOfProcess.setValue(2);
         slderNoOfProcess.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 slderNoOfProcessStateChanged(evt);
@@ -198,10 +201,13 @@ public class Calculator extends javax.swing.JFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
+        lblWaiting.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblWaiting.setText("WAITING TIME (WT)");
 
+        lblAverageTurn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblAverageTurn.setText("Average TurnAround Time (ATaT)");
 
+        lblAverageWaiting.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblAverageWaiting.setText("Average Waiting Time (AWT)");
 
         txtAverageTurn.setEditable(false);
@@ -215,7 +221,7 @@ public class Calculator extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Process", "TurnAround Time (TaT)"
+                "Process", "TurnAround Time"
             }
         ) {
             Class[] types = new Class [] {
@@ -228,6 +234,7 @@ public class Calculator extends javax.swing.JFrame {
         });
         jScrollPane7.setViewportView(tblTurn);
 
+        lblTurn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblTurn.setText("TURNAROUND TIME (TaT)");
 
         tblWaiting.setModel(new javax.swing.table.DefaultTableModel(
@@ -235,7 +242,7 @@ public class Calculator extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Process", "Waiting Time (WT)"
+                "Process", "Waiting Time"
             }
         ) {
             Class[] types = new Class [] {
@@ -254,39 +261,38 @@ public class Calculator extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addComponent(lblTurn)
-                        .addGap(57, 57, 57))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(48, 48, 48)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblAverageTurn)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addGap(54, 54, 54)
-                                        .addComponent(txtAverageTurn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addGap(8, 8, 8)))
+                        .addContainerGap()
+                        .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(102, 102, 102)
+                        .addComponent(txtAverageTurn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(61, 61, 61)
+                        .addComponent(lblTurn))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addComponent(lblAverageTurn)))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(8, 8, 8)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(55, 55, 55)
-                                .addComponent(lblWaiting))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(31, 31, 31)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblAverageWaiting)
                                     .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addGap(47, 47, 47)
-                                        .addComponent(txtAverageWaiting, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap())
+                                        .addGap(78, 78, 78)
+                                        .addComponent(txtAverageWaiting, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addComponent(jScrollPane8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                                .addContainerGap())
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lblWaiting)
+                                .addGap(57, 57, 57))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblAverageWaiting)
+                        .addGap(29, 29, 29))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -422,14 +428,6 @@ public class Calculator extends javax.swing.JFrame {
 
                 sortArray(processName, arrivalTime, burstTime);
             } else {
-                sortArray(processName, arrivalTime, burstTime);
-                burstTime[0] = runProcess(processName[0], arrivalTime[0], burstTime[0]);
-                // For debugging
-                for (int i = 0; i < chartModel.getColumnCount(); i++) {
-                    System.out.println(processName[i]);
-                    System.out.println(arrivalTime[i]);
-                    System.out.println(burstTime[i]);
-                }
 
                 // Add the new column to the Gantt Chart
                 chartModel.addColumn(processName[0]);
@@ -437,9 +435,11 @@ public class Calculator extends javax.swing.JFrame {
                 // Set the value in the same row for the corresponding column
                 int columnIndex = chartModel.getColumnCount() - 1;
                 chartModel.setValueAt(timeSpent, rowIndex, columnIndex);
+                sortArray(processName, arrivalTime, burstTime);
             }
         }
     }//GEN-LAST:event_btnCalculateActionPerformed
+
 
     private void sortArray(String[] processName, int[] arrivalTime, int[] burstTime) {
         Integer[] indexes = new Integer[burstTime.length];
