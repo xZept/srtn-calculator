@@ -6,6 +6,7 @@ import javax.swing.table.DefaultTableModel;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Stack;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -27,6 +28,10 @@ public class Calculator extends javax.swing.JFrame {
     // Global variable to keep track of the number of completed processes and the time spent
     static int completedProcess = 0;
     static int timeSpent = 0;
+
+    // Global variable for AWT and ATaT
+    static int awt = 0;
+    static int atat = 0;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -57,13 +62,13 @@ public class Calculator extends javax.swing.JFrame {
         lblWaiting = new javax.swing.JLabel();
         lblAverageTurn = new javax.swing.JLabel();
         lblAverageWaiting = new javax.swing.JLabel();
-        txtAverageTurn = new javax.swing.JTextField();
-        txtAverageWaiting = new javax.swing.JTextField();
-        jScrollPane7 = new javax.swing.JScrollPane();
-        tblTurn = new javax.swing.JTable();
         lblTurn = new javax.swing.JLabel();
-        jScrollPane8 = new javax.swing.JScrollPane();
-        tblWaiting = new javax.swing.JTable();
+        lblAveWT = new javax.swing.JLabel();
+        lblAveTaT = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtAreaTaT = new javax.swing.JTextArea();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        txtAreaWT = new javax.swing.JTextArea();
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -210,50 +215,25 @@ public class Calculator extends javax.swing.JFrame {
         lblAverageWaiting.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblAverageWaiting.setText("Average Waiting Time (AWT)");
 
-        txtAverageTurn.setEditable(false);
-        txtAverageTurn.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-
-        txtAverageWaiting.setEditable(false);
-        txtAverageWaiting.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-
-        tblTurn.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Process", "TurnAround Time"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Integer.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        jScrollPane7.setViewportView(tblTurn);
-
         lblTurn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblTurn.setText("TURNAROUND TIME (TaT)");
 
-        tblWaiting.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+        lblAveWT.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblAveWT.setText("-");
 
-            },
-            new String [] {
-                "Process", "Waiting Time"
-            }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Integer.class
-            };
+        lblAveTaT.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblAveTaT.setText("-");
+        lblAveTaT.setToolTipText("");
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
-        jScrollPane8.setViewportView(tblWaiting);
+        txtAreaTaT.setEditable(false);
+        txtAreaTaT.setColumns(20);
+        txtAreaTaT.setRows(5);
+        jScrollPane2.setViewportView(txtAreaTaT);
+
+        txtAreaWT.setEditable(false);
+        txtAreaWT.setColumns(20);
+        txtAreaWT.setRows(5);
+        jScrollPane3.setViewportView(txtAreaWT);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -262,58 +242,52 @@ public class Calculator extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(102, 102, 102)
-                        .addComponent(txtAverageTurn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(61, 61, 61)
-                        .addComponent(lblTurn))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(34, 34, 34)
-                        .addComponent(lblAverageTurn)))
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(lblAverageTurn))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(8, 8, 8)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel2Layout.createSequentialGroup()
-                                        .addGap(78, 78, 78)
-                                        .addComponent(txtAverageWaiting, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 0, Short.MAX_VALUE))
-                                    .addComponent(jScrollPane8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                                .addContainerGap())
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(lblWaiting)
-                                .addGap(57, 57, 57))))
+                        .addGap(48, 48, 48)
+                        .addComponent(lblTurn)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lblAverageWaiting)
-                        .addGap(29, 29, 29))))
+                        .addGap(29, 29, 29))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(lblWaiting)
+                        .addGap(62, 62, 62))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(98, 98, 98)
+                .addComponent(lblAveTaT, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblAveWT, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(80, 80, 80))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(11, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblTurn)
                     .addComponent(lblWaiting))
-                .addGap(3, 3, 3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblAverageWaiting)
+                    .addComponent(lblAverageTurn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblAverageTurn)
-                    .addComponent(lblAverageWaiting))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtAverageTurn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtAverageWaiting, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblAveWT)
+                    .addComponent(lblAveTaT))
+                .addGap(12, 12, 12))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -387,6 +361,7 @@ public class Calculator extends javax.swing.JFrame {
         String processName[] = new String[userInputModel.getRowCount()];
         int arrivalTime[] = new int[userInputModel.getRowCount()];
         int burstTime[] = new int[userInputModel.getRowCount()];
+        int burstTimeCopy[] = new int[userInputModel.getRowCount()];
 
         try {
             // Save the user input values to your arrays or process them as needed
@@ -394,6 +369,7 @@ public class Calculator extends javax.swing.JFrame {
                 processName[i] = (String) userInputModel.getValueAt(i, 0);
                 arrivalTime[i] = (int) userInputModel.getValueAt(i, 1);
                 burstTime[i] = (int) userInputModel.getValueAt(i, 2);
+                burstTimeCopy[i] = burstTime[i];
             }
 
             // Sort the table based on their arrival
@@ -407,14 +383,35 @@ public class Calculator extends javax.swing.JFrame {
             processName[i] = (String) userInputModel.getValueAt(i, 0);
             arrivalTime[i] = (int) userInputModel.getValueAt(i, 1);
             burstTime[i] = (int) userInputModel.getValueAt(i, 2);
+            burstTimeCopy[i] = burstTime[i];
         }
 
         // Create a new row for the Gantt Chart
         chartModel.addRow(new Object[userInputModel.getRowCount()]);
         int rowIndex = chartModel.getRowCount() - 1;
 
+        // Save the arrival times to a stack
+        Stack<Integer> stk = new Stack<>();
+        for (int i = userInputModel.getRowCount() - 1; i >= 0; i--) {
+            stk.push(arrivalTime[i]);
+        }
+        stk.pop();
+
+        // Add a 0 at the start of the chart
+        chartModel.addColumn("");
+        chartModel.setValueAt(timeSpent, rowIndex, 0);
+        
+        int rowCount = userInputModel.getRowCount();
+        
         while (completedProcess != userInputModel.getRowCount()) {
-            burstTime[0] = runProcess(processName[0], arrivalTime[0], burstTime[0], arrivalTime[1]);
+            int nextArrivalTime = 0;
+            if (!stk.isEmpty()) {
+                nextArrivalTime = stk.peek();
+            }
+
+            int tempTaT = 0;
+
+            burstTime[0] = runProcess(processName[0], arrivalTime[0], burstTime[0], nextArrivalTime);
 
             if (burstTime[0] == 0) {
                 completedProcess++;
@@ -426,22 +423,34 @@ public class Calculator extends javax.swing.JFrame {
                 int columnIndex = chartModel.getColumnCount() - 1;
                 chartModel.setValueAt(timeSpent, rowIndex, columnIndex);
 
-                sortArray(processName, arrivalTime, burstTime);
-            } else {
+                // Compute Waiting Time and TurnAround Time
+                tempTaT = computeTaT(processName[0], timeSpent, arrivalTime[0]);
+                atat += tempTaT;
+                awt += computeWT(processName[0], tempTaT, burstTimeCopy[0]);
 
+                sortArray(processName, arrivalTime, burstTime, burstTimeCopy);
+
+            } else {
                 // Add the new column to the Gantt Chart
                 chartModel.addColumn(processName[0]);
 
                 // Set the value in the same row for the corresponding column
                 int columnIndex = chartModel.getColumnCount() - 1;
                 chartModel.setValueAt(timeSpent, rowIndex, columnIndex);
-                sortArray(processName, arrivalTime, burstTime);
+                sortArray(processName, arrivalTime, burstTime, burstTimeCopy);
+            }
+
+            // Move to the next arrival time if the current one is reached
+            if ((!stk.isEmpty()) && (stk.peek() <= timeSpent)) {
+                stk.pop();
             }
         }
+        
+        lblAveWT.setText(Integer.toString(awt / rowCount));
+        lblAveTaT.setText(Integer.toString(atat / rowCount));
     }//GEN-LAST:event_btnCalculateActionPerformed
 
-
-    private void sortArray(String[] processName, int[] arrivalTime, int[] burstTime) {
+    private void sortArray(String[] processName, int[] arrivalTime, int[] burstTime, int[] burstTimeCopy) {
         Integer[] indexes = new Integer[burstTime.length];
 
         for (int i = 0; i < burstTime.length; i++) {
@@ -450,54 +459,39 @@ public class Calculator extends javax.swing.JFrame {
 
         // Sorting based on burst time and then arrival time
         Arrays.sort(indexes, Comparator.comparingInt(i -> {
-            if (burstTime[i] == 0 || burstTime[i] < timeSpent) {
-                // Process has burst time 0 or has already arrived
+            if ((arrivalTime[i] <= timeSpent) && (burstTime[i] > 0)) {
                 return burstTime[i];
             } else {
-                // Set a high value for processes that haven't arrived yet
+                // Set a high value for processes that haven't arrived yet or have burst time 0
                 return Integer.MAX_VALUE;
             }
         }));
 
-        // Creating a temporary array to store the sorted values
+        // Create a temporary array to store the sorted values
         String[] tempProcessName = Arrays.copyOf(processName, processName.length);
         int[] tempArrivalTime = Arrays.copyOf(arrivalTime, arrivalTime.length);
         int[] tempBurstTime = Arrays.copyOf(burstTime, burstTime.length);
+        int[] tempBurstTimeCopy = Arrays.copyOf(burstTimeCopy, burstTimeCopy.length);
 
-        // Move processes with burst time 0 to the end
-        int zeroBurstIndex = 0;
+        // Copy back the values to the original arrays based on the sorted indexes
         for (int i = 0; i < burstTime.length; i++) {
-            if (tempBurstTime[i] == 0) {
-                zeroBurstIndex = i;
-                break;
-            }
+            processName[i] = tempProcessName[indexes[i]];
+            arrivalTime[i] = tempArrivalTime[indexes[i]];
+            burstTime[i] = tempBurstTime[indexes[i]];
+            burstTimeCopy[i] = tempBurstTimeCopy[indexes[i]];
         }
-
-        // Swap elements to move burst time 0 process to the end
-        for (int i = zeroBurstIndex; i < burstTime.length - 1; i++) {
-            if (tempBurstTime[i + 1] == 0 || tempBurstTime[i + 1] < timeSpent) {
-                swap(tempProcessName, i, i + 1);
-                swap(tempArrivalTime, i, i + 1);
-                swap(tempBurstTime, i, i + 1);
-            }
-        }
-
-        // Copying back the values to the original arrays
-        System.arraycopy(tempProcessName, 0, processName, 0, processName.length);
-        System.arraycopy(tempArrivalTime, 0, arrivalTime, 0, arrivalTime.length);
-        System.arraycopy(tempBurstTime, 0, burstTime, 0, burstTime.length);
     }
 
-    private void swap(String[] array, int index1, int index2) {
-        String temp = array[index1];
-        array[index1] = array[index2];
-        array[index2] = temp;
+    private int computeTaT(String processName, int fTeT, int arrivalTime) {
+        txtAreaTaT.append(processName + ": " + fTeT + " - " + arrivalTime + " = " + (fTeT - arrivalTime));
+        txtAreaTaT.append("\n");
+        return fTeT - arrivalTime;
     }
 
-    private void swap(int[] array, int index1, int index2) {
-        int temp = array[index1];
-        array[index1] = array[index2];
-        array[index2] = temp;
+    private int computeWT(String processName, int turnAroundTime, int burstTime) {
+        txtAreaWT.append(processName + ": " + turnAroundTime + " - " + burstTime + " = " + (turnAroundTime - burstTime));
+        txtAreaWT.append("\n");
+        return turnAroundTime - burstTime;
     }
 
     private void sortTable(DefaultTableModel model) {
@@ -543,26 +537,12 @@ public class Calculator extends javax.swing.JFrame {
         if (burst == 0) {
             return burst;
         } // If another process arrives at this time, check burst times and prioritize the lower burst time
-        else if (timeSpent == nextProcessArrival) {
+        if (timeSpent == nextProcessArrival) {
             return burst;
-        } else {
-            timeSpent++;
-            // Recursive call
-            return runProcess(name, arrival, burst - 1, nextProcessArrival);
         }
-    }
-
-    // Overloaded method that also runs the process
-    private int runProcess(String name, int arrival, int burst) {
-        // Burst time has reached 0
-        if (burst == 0) {
-            return burst;
-        } // If another process arrives at this time, check burst times and prioritize the lower burst time
-        else {
-            timeSpent++;
-            // Recursive call
-            return runProcess(name, arrival, burst - 1);
-        }
+        timeSpent++;
+        // Recursive call
+        return runProcess(name, arrival, burst - 1, nextProcessArrival);
     }
 
     /**
@@ -606,13 +586,15 @@ public class Calculator extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JScrollPane jScrollPane7;
-    private javax.swing.JScrollPane jScrollPane8;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
+    private javax.swing.JLabel lblAveTaT;
+    private javax.swing.JLabel lblAveWT;
     private javax.swing.JLabel lblAverageTurn;
     private javax.swing.JLabel lblAverageWaiting;
     private javax.swing.JLabel lblGantt;
@@ -623,10 +605,8 @@ public class Calculator extends javax.swing.JFrame {
     private javax.swing.JLabel lblWaiting;
     private javax.swing.JSlider slderNoOfProcess;
     private javax.swing.JTable tblChart;
-    private javax.swing.JTable tblTurn;
     private javax.swing.JTable tblUserInput;
-    private javax.swing.JTable tblWaiting;
-    private javax.swing.JTextField txtAverageTurn;
-    private javax.swing.JTextField txtAverageWaiting;
+    private javax.swing.JTextArea txtAreaTaT;
+    private javax.swing.JTextArea txtAreaWT;
     // End of variables declaration//GEN-END:variables
 }
